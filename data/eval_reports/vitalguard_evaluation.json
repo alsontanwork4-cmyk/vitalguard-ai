@@ -1,139 +1,157 @@
-[
-  {
-    "dataset": "sepsis_onset",
-    "kind": "scenario",
-    "expected_pattern": "sepsis_triad",
-    "latest_expected_minute": 30,
-    "pattern_minute": 21,
-    "alert_minute": 16,
-    "severity": "WARNING",
-    "patterns": [
-      "desaturation_trend"
-    ],
-    "news2": 1,
-    "shock_index": 0.66,
-    "map": 90.3,
-    "passed": true
-  },
-  {
-    "dataset": "compensatory_shock",
-    "kind": "scenario",
-    "expected_pattern": "compensatory_tachycardia",
-    "latest_expected_minute": 35,
-    "pattern_minute": 28,
-    "alert_minute": 28,
-    "severity": "WARNING",
-    "patterns": [
-      "compensatory_tachycardia"
-    ],
-    "news2": 0,
-    "shock_index": 0.74,
-    "map": 89.0,
-    "passed": true
-  },
-  {
-    "dataset": "respiratory_deterioration",
-    "kind": "scenario",
-    "expected_pattern": "desaturation_trend",
-    "latest_expected_minute": 35,
-    "pattern_minute": 23,
-    "alert_minute": 23,
-    "severity": "WARNING",
-    "patterns": [
-      "desaturation_trend"
-    ],
-    "news2": 1,
-    "shock_index": 0.71,
-    "map": 93.0,
-    "passed": true
-  },
-  {
-    "dataset": "stable_postop",
-    "kind": "scenario",
-    "expected_pattern": null,
-    "latest_expected_minute": null,
-    "pattern_minute": null,
-    "alert_minute": null,
-    "severity": "INFO",
-    "patterns": [],
-    "news2": 0,
-    "shock_index": 0.6,
-    "map": 93.7,
-    "passed": true
-  },
-  {
-    "dataset": "vitaldb_case_4096.csv",
-    "kind": "vitaldb",
-    "status": "ok",
-    "degraded_mode": true,
-    "degradation_reasons": [
-      "Signal 'hr' contained sparse gaps and was linearly interpolated.",
-      "Signal 'spo2' contained sparse gaps and was linearly interpolated.",
-      "Signal 'sbp' contained sparse gaps and was linearly interpolated.",
-      "Signal 'dbp' contained sparse gaps and was linearly interpolated.",
-      "Signal 'temp_c' contained sparse gaps and was linearly interpolated.",
-      "Signal 'rr' contained sparse gaps and was linearly interpolated.",
-      "Signal 'etco2' contained sparse gaps and was linearly interpolated."
-    ],
-    "found_tracks": {
-      "hr": "Solar8000/HR",
-      "spo2": "Solar8000/PLETH_SPO2",
-      "sbp": "Solar8000/NIBP_SBP",
-      "dbp": "Solar8000/NIBP_DBP",
-      "temp_c": "Solar8000/BT",
-      "rr": "Solar8000/RR",
-      "etco2": "Solar8000/ETCO2"
+{
+  "validation_scope": [
+    "4 deterministic synthetic scenarios with expected alert-pattern checks.",
+    "1 real VitalDB public case normalized into the VitalGuard monitor schema.",
+    "1 degraded VitalDB variant with missing temperature and intermittent NIBP gaps."
+  ],
+  "limitations": [
+    "This evaluation is a prototype verification pass, not a clinical trial or outcomes study.",
+    "The system operates on scenario CSVs and retrospective VitalDB exports, not a live bedside monitor feed.",
+    "There is no EHR integration, clinician feedback loop, or hospital deployment in this repository.",
+    "No latency, workflow-efficiency, or productivity benchmark is included in this evaluation."
+  ],
+  "evidence_notes": [
+    "Synthetic scenarios are deterministic repo fixtures used to verify alert timing, pattern detection, and stable-case quiet behavior.",
+    "The real VitalDB case shows that the same loader and analytics stack can normalize and assess a public retrospective monitor export.",
+    "The degraded VitalDB case shows that analysis can continue when optional temperature is imputed and intermittent blood-pressure gaps are interpolated."
+  ],
+  "results": [
+    {
+      "dataset": "sepsis_onset",
+      "kind": "scenario",
+      "expected_pattern": "sepsis_triad",
+      "latest_expected_minute": 30,
+      "pattern_minute": 21,
+      "alert_minute": 16,
+      "severity": "WARNING",
+      "patterns": [
+        "desaturation_trend"
+      ],
+      "news2": 1,
+      "shock_index": 0.66,
+      "map": 90.3,
+      "passed": true
     },
-    "missing_required_signals": [],
-    "alert_minute": 1,
-    "severity": "CRITICAL",
-    "patterns": [],
-    "news2": 6,
-    "shock_index": 0.44,
-    "map": 116.7,
-    "passed": true
-  },
-  {
-    "dataset": "degraded_vitaldb_case_4096.csv",
-    "kind": "vitaldb_degraded",
-    "status": "ok",
-    "degraded_mode": true,
-    "degradation_reasons": [
-      "Signal 'hr' contained sparse gaps and was linearly interpolated.",
-      "Signal 'spo2' contained sparse gaps and was linearly interpolated.",
-      "Signal 'sbp' contained sparse gaps and was linearly interpolated.",
-      "Signal 'dbp' contained sparse gaps and was linearly interpolated.",
-      "Optional signal 'temp_c' was present as 'Solar8000/BT' but contained no usable numeric values.",
-      "Signal 'rr' contained sparse gaps and was linearly interpolated.",
-      "Signal 'etco2' contained sparse gaps and was linearly interpolated."
-    ],
-    "found_tracks": {
-      "hr": "Solar8000/HR",
-      "spo2": "Solar8000/PLETH_SPO2",
-      "sbp": "Solar8000/NIBP_SBP",
-      "dbp": "Solar8000/NIBP_DBP",
-      "temp_c": "Solar8000/BT",
-      "rr": "Solar8000/RR",
-      "etco2": "Solar8000/ETCO2"
+    {
+      "dataset": "compensatory_shock",
+      "kind": "scenario",
+      "expected_pattern": "compensatory_tachycardia",
+      "latest_expected_minute": 35,
+      "pattern_minute": 28,
+      "alert_minute": 28,
+      "severity": "WARNING",
+      "patterns": [
+        "compensatory_tachycardia"
+      ],
+      "news2": 0,
+      "shock_index": 0.74,
+      "map": 89.0,
+      "passed": true
     },
-    "missing_required_signals": [],
-    "interpolated_signals": [
-      "hr",
-      "spo2",
-      "sbp",
-      "dbp",
-      "rr",
-      "etco2"
-    ],
-    "imputed_optional_signals": [
-      "temp_c"
-    ],
-    "alert_minute": 1,
-    "severity": "CRITICAL",
-    "patterns": [],
-    "news2": 3,
-    "shock_index": 0.44,
-    "map": 116.7,
-    "passed": true
-  }
-]
+    {
+      "dataset": "respiratory_deterioration",
+      "kind": "scenario",
+      "expected_pattern": "desaturation_trend",
+      "latest_expected_minute": 35,
+      "pattern_minute": 23,
+      "alert_minute": 23,
+      "severity": "WARNING",
+      "patterns": [
+        "desaturation_trend"
+      ],
+      "news2": 1,
+      "shock_index": 0.71,
+      "map": 93.0,
+      "passed": true
+    },
+    {
+      "dataset": "stable_postop",
+      "kind": "scenario",
+      "expected_pattern": null,
+      "latest_expected_minute": null,
+      "pattern_minute": null,
+      "alert_minute": null,
+      "severity": "INFO",
+      "patterns": [],
+      "news2": 0,
+      "shock_index": 0.6,
+      "map": 93.7,
+      "passed": true
+    },
+    {
+      "dataset": "vitaldb_case_4096.csv",
+      "kind": "vitaldb",
+      "status": "ok",
+      "degraded_mode": true,
+      "degradation_reasons": [
+        "Signal 'hr' contained sparse gaps and was linearly interpolated.",
+        "Signal 'spo2' contained sparse gaps and was linearly interpolated.",
+        "Signal 'sbp' contained sparse gaps and was linearly interpolated.",
+        "Signal 'dbp' contained sparse gaps and was linearly interpolated.",
+        "Signal 'temp_c' contained sparse gaps and was linearly interpolated.",
+        "Signal 'rr' contained sparse gaps and was linearly interpolated.",
+        "Signal 'etco2' contained sparse gaps and was linearly interpolated."
+      ],
+      "found_tracks": {
+        "hr": "Solar8000/HR",
+        "spo2": "Solar8000/PLETH_SPO2",
+        "sbp": "Solar8000/NIBP_SBP",
+        "dbp": "Solar8000/NIBP_DBP",
+        "temp_c": "Solar8000/BT",
+        "rr": "Solar8000/RR",
+        "etco2": "Solar8000/ETCO2"
+      },
+      "missing_required_signals": [],
+      "alert_minute": 1,
+      "severity": "CRITICAL",
+      "patterns": [],
+      "news2": 6,
+      "shock_index": 0.44,
+      "map": 116.7,
+      "passed": true
+    },
+    {
+      "dataset": "degraded_vitaldb_case_4096.csv",
+      "kind": "vitaldb_degraded",
+      "status": "ok",
+      "degraded_mode": true,
+      "degradation_reasons": [
+        "Signal 'hr' contained sparse gaps and was linearly interpolated.",
+        "Signal 'spo2' contained sparse gaps and was linearly interpolated.",
+        "Signal 'sbp' contained sparse gaps and was linearly interpolated.",
+        "Signal 'dbp' contained sparse gaps and was linearly interpolated.",
+        "Optional signal 'temp_c' was present as 'Solar8000/BT' but contained no usable numeric values.",
+        "Signal 'rr' contained sparse gaps and was linearly interpolated.",
+        "Signal 'etco2' contained sparse gaps and was linearly interpolated."
+      ],
+      "found_tracks": {
+        "hr": "Solar8000/HR",
+        "spo2": "Solar8000/PLETH_SPO2",
+        "sbp": "Solar8000/NIBP_SBP",
+        "dbp": "Solar8000/NIBP_DBP",
+        "temp_c": "Solar8000/BT",
+        "rr": "Solar8000/RR",
+        "etco2": "Solar8000/ETCO2"
+      },
+      "missing_required_signals": [],
+      "interpolated_signals": [
+        "hr",
+        "spo2",
+        "sbp",
+        "dbp",
+        "rr",
+        "etco2"
+      ],
+      "imputed_optional_signals": [
+        "temp_c"
+      ],
+      "alert_minute": 1,
+      "severity": "CRITICAL",
+      "patterns": [],
+      "news2": 3,
+      "shock_index": 0.44,
+      "map": 116.7,
+      "passed": true
+    }
+  ]
+}

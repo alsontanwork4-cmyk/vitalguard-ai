@@ -1,13 +1,22 @@
 # VitalGuard AI
 
-VitalGuard AI is a Google ADK multi-agent monitoring system for bedside vital signs. It is built for Track B: Quantitative Forge and targets the clinical gap between noisy single-threshold monitor alarms and the gradual multi-parameter deterioration patterns that clinicians often discover too late.
+VitalGuard AI is a Google ADK multi-agent prototype for analyzing bedside-monitor style vital-sign data from synthetic scenarios and VitalDB CSV exports. It is built for Track B: Quantitative Forge and focuses on multi-parameter deterioration patterns that simple threshold alarms can miss.
 
-One-line value proposition: VitalGuard watches six monitor signals continuously, computes deterministic early-warning metrics every cycle, and uses an agent pipeline to turn subtle trends into prioritized clinical escalation guidance.
+One-line value proposition: VitalGuard ingests seven monitor signals from scenario or VitalDB CSV data, computes deterministic early-warning metrics every cycle, and uses an agent pipeline to turn those trends into prioritized escalation-oriented summaries.
 
+## Submission Summary
+
+This repository is structured to satisfy the submission requirements and judging rubric:
+
+- required repo content: title, architecture diagram, and agent profile sections
+- agentic recovery: explicit fallback behavior for missing files, sparse data, missing tracks, out-of-range minute requests, and short windows
+- technical depth: NEWS2, shock index, MAP, slope analysis, pattern detection, and VitalDB normalization
+- system robustness: deterministic analytics layer, session-aware tools, stable no-alert benchmark, degraded-mode handling
+- documentation/demo: exact setup steps, exact demo prompts, evaluation script, backup demo runbook, and a submission wording guide under `app/`
 
 ## Why This Matters
 
-Patients rarely crash all at once. They drift. A heart rate trend, a soft blood-pressure decline, and a rising respiratory rate can signal deterioration long before a hard threshold alarm triggers. VitalGuard is designed to catch those interactions earlier while staying quiet for stable patients.
+Patients rarely crash all at once. They drift. A heart rate trend, a soft blood-pressure decline, and a rising respiratory rate can signal deterioration before a hard threshold alarm triggers. VitalGuard is a prototype that demonstrates how deterministic trend analysis plus agent orchestration can surface those interactions while remaining quiet on the included stable benchmark.
 
 The system monitors this bedside-monitor schema:
 
@@ -23,7 +32,7 @@ The system monitors this bedside-monitor schema:
 
 ```mermaid
 flowchart TD
-    A["VitalDB CSV mimic live data from Patient Monitoring System"] --> B["Coordinator Agent"]
+    A["Synthetic Scenario CSV or VitalDB CSV"] --> B["Coordinator Agent"]
     B --> C["Trend Analyzer"]
     C --> D["Protocol Recommender"]
     D --> E["Prioritized Recommendation"]
@@ -70,18 +79,18 @@ The deterministic tool layer owns validation, normalization, interpolation, clam
 
 ### Synthetic scenarios
 
-Located under [`data/scenarios`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/data/scenarios), the built-in scenarios are:
+Located under `data/scenarios`, the built-in scenarios are:
 
 - `sepsis_onset`
 - `compensatory_shock`
 - `respiratory_deterioration`
 - `stable_postop`
 
-These provide deterministic benchmarks for alert timing and low-noise behavior.
+These provide deterministic benchmarks for alert timing and low-noise behavior inside this repository.
 
 ### VitalDB support
 
-The normalizer in [tools/vitaldb_adapter.py](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/tools/vitaldb_adapter.py) maps VitalDB monitor exports into the VitalGuard schema.
+The normalizer in `tools/vitaldb_adapter.py` maps VitalDB monitor exports into the VitalGuard schema.
 
 Validated VitalDB monitor tracks:
 
@@ -138,7 +147,7 @@ Recovery behavior is explicit and deterministic.
 
 ## Technical Depth
 
-Deterministic analytics live in [tools/analytics.py](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/tools/analytics.py):
+Deterministic analytics live in `tools/analytics.py`:
 
 - NEWS2 scoring
 - shock index
@@ -153,18 +162,23 @@ This separation is intentional: the LLM agents interpret deterministic outputs r
 
 ## System Robustness
 
-The project is designed to be robust under judge-facing conditions:
+The project is designed to be robust under judge-facing demo conditions:
 
 - session-aware monitor tools keep dataset cursor state inside ADK sessions
-- deterministic scenario verification is available via [`scripts/verify_scenarios.py`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/scripts/verify_scenarios.py)
-- reproducible evaluation is available via [`scripts/evaluate_vitalguard.py`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/scripts/evaluate_vitalguard.py)
-- a stable-patient benchmark proves the system stays `INFO`
-- a degraded VitalDB benchmark proves the system can continue through missing temperature and intermittent NIBP
+- deterministic scenario verification is available via `scripts/verify_scenarios.py`
+- reproducible evaluation is available via `scripts/evaluate_vitalguard.py`
+- a stable-patient benchmark shows the system stays `INFO` on the included fixture
+- a degraded VitalDB benchmark shows the system can continue through missing temperature and intermittent NIBP gaps within the repo's recovery policy
 
 Latest evaluation outputs are written to:
 
-- [`data/eval_reports/vitalguard_evaluation.json`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/data/eval_reports/vitalguard_evaluation.json)
-- [`data/eval_reports/vitalguard_evaluation.md`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/data/eval_reports/vitalguard_evaluation.md)
+- `data/eval_reports/vitalguard_evaluation.json`
+- `data/eval_reports/vitalguard_evaluation.md`
+
+Submission-safe wording guidance is documented in:
+
+- `app/submission-evidence-guide.md`
+- `app/demo-artifacts.md`
 
 ## Documentation / Demo
 
@@ -237,16 +251,20 @@ Load scenario stable_postop and assess the patient
 ```
 
 ```text
-Load VitalDB file vitaldb_case_4096.csv and assess minute 25
+Load VitalDB file .\data\vitaldb_case_4096.csv and assess minute 25
 ```
 
 Expected demo outcomes:
 
-- sepsis scenario escalates early with sepsis-triad / rising-risk language
-- bleeding scenario warns before frank hypotension
-- respiratory scenario warns on the trend before severe desaturation
-- stable scenario stays quiet
-- VitalDB scenario proves the same toolchain works on a real public case
+- sepsis scenario escalates with sepsis-triad / rising-risk language before end-stage collapse in the fixture
+- bleeding scenario warns on compensatory deterioration before frank hypotension in the fixture
+- respiratory scenario warns on the trend before severe desaturation in the fixture
+- stable scenario remains `INFO`
+- VitalDB scenario shows the same toolchain can normalize and assess one real public case CSV
+
+### Backup demo artifacts
+
+The judge-facing runbook, safe presenter notes, and backup artifact status are documented in `app/demo-artifacts.md`.
 
 ## Evaluation Scenarios
 
@@ -256,6 +274,7 @@ The evaluation script reports:
 - resulting severity
 - triggered patterns
 - pass/fail against expected scenario behavior
+- validation scope, evidence notes, and explicit limitations
 
 It covers:
 
@@ -266,3 +285,20 @@ It covers:
 - one real VitalDB case
 - one degraded VitalDB case with missing temperature and intermittent NIBP
 
+## Repo Layout
+
+- `agents/`
+- `tools/`
+- `scripts/`
+- `app/`
+
+## Limitations
+
+- This prototype is for hackathon demonstration only and does not provide medical diagnosis.
+- The current evidence package covers four synthetic scenarios, one public VitalDB case, and one degraded VitalDB case only.
+- The repository does not include a clinical trial, patient-outcome study, or alarm-fatigue study.
+- The repository does not include live bedside monitor integration, EHR integration, or clinician feedback loops.
+- The repository does not include production auth, audit logging, compliance controls, or formal workflow-efficiency benchmarks.
+- qSOFA is intentionally limited because mental status is not present in the monitor feed.
+- Missing required VitalDB bedside-monitor tracks block analysis rather than being guessed.
+- The current UI is the ADK Web UI; a custom dashboard remains optional stretch work.

@@ -16,6 +16,22 @@ from tools.vitaldb_adapter import normalize_vitaldb_csv_with_metadata
 SCENARIO_DIR = ROOT / "data" / "scenarios"
 REPORT_DIR = ROOT / "data" / "eval_reports"
 REAL_VITALDB_CASE = ROOT / "data" / "vitaldb_case_4096.csv"
+VALIDATION_SCOPE = [
+    "4 deterministic synthetic scenarios with expected alert-pattern checks.",
+    "1 real VitalDB public case normalized into the VitalGuard monitor schema.",
+    "1 degraded VitalDB variant with missing temperature and intermittent NIBP gaps.",
+]
+LIMITATIONS = [
+    "This evaluation is a prototype verification pass, not a clinical trial or outcomes study.",
+    "The system operates on scenario CSVs and retrospective VitalDB exports, not a live bedside monitor feed.",
+    "There is no EHR integration, clinician feedback loop, or hospital deployment in this repository.",
+    "No latency, workflow-efficiency, or productivity benchmark is included in this evaluation.",
+]
+EVIDENCE_NOTES = [
+    "Synthetic scenarios are deterministic repo fixtures used to verify alert timing, pattern detection, and stable-case quiet behavior.",
+    "The real VitalDB case shows that the same loader and analytics stack can normalize and assess a public retrospective monitor export.",
+    "The degraded VitalDB case shows that analysis can continue when optional temperature is imputed and intermittent blood-pressure gaps are interpolated.",
+]
 
 
 def _find_first_alert(df: pd.DataFrame) -> dict:
@@ -137,14 +153,36 @@ def _evaluate_degraded_vitaldb_case() -> dict:
     }
 
 
+def _result_evidence_note(result: dict) -> str:
+    if result["kind"] == "scenario":
+        if result["dataset"] == "stable_postop":
+            return "Stable-case benchmark remained INFO with no alert."
+        return "Deterministic scenario check matched the expected deterioration pattern within the configured window."
+    if result["kind"] == "vitaldb":
+        return "Public retrospective VitalDB CSV normalized successfully and produced an assessment."
+    if result["kind"] == "vitaldb_degraded":
+        return "Degraded-mode benchmark preserved analysis after optional/imperfect signals were repaired."
+    return "See result details."
+
+
 def _write_markdown_report(results: list[dict]) -> Path:
     report_path = REPORT_DIR / "vitalguard_evaluation.md"
     lines = [
         "# VitalGuard Evaluation Report",
         "",
-        "| Dataset | Kind | Alert Minute | Severity | Expected Pattern | Pattern Minute | First Detected Patterns | Passed |",
-        "| --- | --- | ---: | --- | --- | ---: | --- | --- |",
+        "## Validation Scope",
+        "",
     ]
+    lines.extend(f"- {item}" for item in VALIDATION_SCOPE)
+    lines.extend(
+        [
+            "",
+            "## Dataset Results",
+            "",
+            "| Dataset | Kind | Alert Minute | Severity | Expected Pattern | Pattern Minute | First Detected Patterns | Passed | Evidence Note |",
+            "| --- | --- | ---: | --- | --- | ---: | --- | --- | --- |",
+        ]
+    )
 
     for result in results:
         alert_minute = result.get("alert_minute")
@@ -154,17 +192,33 @@ def _write_markdown_report(results: list[dict]) -> Path:
         lines.append(
             f"| {result['dataset']} | {result['kind']} | {alert_minute if alert_minute is not None else '-'} "
             f"| {result.get('severity', result.get('status', '-'))} | {expected_pattern} "
-            f"| {pattern_minute if pattern_minute is not None else '-'} | {patterns} | {result['passed']} |"
+            f"| {pattern_minute if pattern_minute is not None else '-'} | {patterns} | {result['passed']} "
+            f"| {_result_evidence_note(result)} |"
         )
 
     lines.extend(
         [
             "",
-            "## Recovery Notes",
+            "## Evidence Notes",
             "",
-            "- Real VitalDB evaluation proves the loader can normalize a public case into the monitor schema.",
-            "- Degraded VitalDB evaluation removes temperature and creates intermittent NIBP gaps to verify recovery mode.",
-            "- Stable synthetic scenario is expected to remain INFO with no intervention.",
+        ]
+    )
+    lines.extend(f"- {item}" for item in EVIDENCE_NOTES)
+    lines.extend(
+        [
+            "",
+            "## Limitations",
+            "",
+        ]
+    )
+    lines.extend(f"- {item}" for item in LIMITATIONS)
+    lines.extend(
+        [
+            "",
+            "## Interpretation Guidance",
+            "",
+            "- These results support the technical claims in this repository: scenario playback, VitalDB normalization, deterministic analytics, recovery behavior, and agent-ready escalation summaries.",
+            "- These results do not establish clinical efficacy, reduced alarm fatigue, hospital readiness, live-device integration, or workflow-efficiency gains.",
         ]
     )
 
@@ -184,7 +238,13 @@ def main() -> None:
     ]
 
     json_path = REPORT_DIR / "vitalguard_evaluation.json"
-    json_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+    report_payload = {
+        "validation_scope": VALIDATION_SCOPE,
+        "limitations": LIMITATIONS,
+        "evidence_notes": EVIDENCE_NOTES,
+        "results": results,
+    }
+    json_path.write_text(json.dumps(report_payload, indent=2), encoding="utf-8")
     markdown_path = _write_markdown_report(results)
 
     print(f"Wrote {json_path}")
