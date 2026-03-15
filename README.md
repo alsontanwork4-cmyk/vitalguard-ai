@@ -4,15 +4,6 @@ VitalGuard AI is a Google ADK multi-agent monitoring system for bedside vital si
 
 One-line value proposition: VitalGuard watches six monitor signals continuously, computes deterministic early-warning metrics every cycle, and uses an agent pipeline to turn subtle trends into prioritized clinical escalation guidance.
 
-## Submission Summary
-
-This repository is structured to satisfy the submission requirements and judging rubric:
-
-- required repo content: title, architecture diagram, and agent profile sections
-- agentic recovery: explicit fallback behavior for missing files, sparse data, missing tracks, out-of-range minute requests, and short windows
-- technical depth: NEWS2, shock index, MAP, slope analysis, pattern detection, and VitalDB normalization
-- system robustness: deterministic analytics layer, session-aware tools, stable no-alert benchmark, degraded-mode handling
-- documentation/demo: exact setup steps, exact demo prompts, evaluation script, and backup demo artifact plan
 
 ## Why This Matters
 
