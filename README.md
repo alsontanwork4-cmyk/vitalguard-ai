@@ -237,7 +237,7 @@ Load scenario stable_postop and assess the patient
 ```
 
 ```text
-Load VitalDB file C:\Users\Alson\Desktop\Projects\Gemini Nexus\data\vitaldb_case_4096.csv and assess minute 25
+Load VitalDB file vitaldb_case_4096.csv and assess minute 25
 ```
 
 Expected demo outcomes:
@@ -247,10 +247,6 @@ Expected demo outcomes:
 - respiratory scenario warns on the trend before severe desaturation
 - stable scenario stays quiet
 - VitalDB scenario proves the same toolchain works on a real public case
-
-### Backup demo artifacts
-
-Recommended artifact locations are documented in [app/demo-artifacts.md](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/app/demo-artifacts.md).
 
 ## Evaluation Scenarios
 
@@ -270,16 +266,3 @@ It covers:
 - one real VitalDB case
 - one degraded VitalDB case with missing temperature and intermittent NIBP
 
-## Repo Layout
-
-- [`agents`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/agents)
-- [`tools`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/tools)
-- [`scripts`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/scripts)
-- [`app`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/app)
-
-## Limitations
-
-- This prototype is for hackathon demonstration only and does not provide medical diagnosis.
-- qSOFA is intentionally limited because mental status is not present in the monitor feed.
-- Missing required VitalDB bedside-monitor tracks block analysis rather than being guessed.
-- The current UI is the ADK Web UI; a custom dashboard remains optional stretch work.
