@@ -23,7 +23,7 @@ The system monitors this bedside-monitor schema:
 
 ```mermaid
 flowchart TD
-    A["Synthetic Scenario CSV or VitalDB CSV"] --> B["Coordinator Agent"]
+    A["VitalDB CSV mimic live data from Patient Monitoring System"] --> B["Coordinator Agent"]
     B --> C["Trend Analyzer"]
     C --> D["Protocol Recommender"]
     D --> E["Prioritized Recommendation"]
