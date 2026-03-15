@@ -70,7 +70,7 @@ The deterministic tool layer owns validation, normalization, interpolation, clam
 
 ### Synthetic scenarios
 
-Located under [`data/scenarios`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/data/scenarios), the built-in scenarios are:
+Located under [`data/scenarios`], the built-in scenarios are:
 
 - `sepsis_onset`
 - `compensatory_shock`
@@ -81,7 +81,7 @@ These provide deterministic benchmarks for alert timing and low-noise behavior.
 
 ### VitalDB support
 
-The normalizer in [tools/vitaldb_adapter.py](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/tools/vitaldb_adapter.py) maps VitalDB monitor exports into the VitalGuard schema.
+The normalizer in [tools/vitaldb_adapter.py] maps VitalDB monitor exports into the VitalGuard schema.
 
 Validated VitalDB monitor tracks:
 
@@ -138,8 +138,7 @@ Recovery behavior is explicit and deterministic.
 
 ## Technical Depth
 
-Deterministic analytics live in [tools/analytics.py](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/tools/analytics.py):
-
+Deterministic analytics live in [tools/analytics.py]
 - NEWS2 scoring
 - shock index
 - MAP
@@ -156,15 +155,15 @@ This separation is intentional: the LLM agents interpret deterministic outputs r
 The project is designed to be robust under judge-facing conditions:
 
 - session-aware monitor tools keep dataset cursor state inside ADK sessions
-- deterministic scenario verification is available via [`scripts/verify_scenarios.py`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/scripts/verify_scenarios.py)
-- reproducible evaluation is available via [`scripts/evaluate_vitalguard.py`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/scripts/evaluate_vitalguard.py)
+- deterministic scenario verification is available via [`scripts/verify_scenarios.py`]
+- reproducible evaluation is available via [`scripts/evaluate_vitalguard.py`]
 - a stable-patient benchmark proves the system stays `INFO`
 - a degraded VitalDB benchmark proves the system can continue through missing temperature and intermittent NIBP
 
 Latest evaluation outputs are written to:
 
-- [`data/eval_reports/vitalguard_evaluation.json`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/data/eval_reports/vitalguard_evaluation.json)
-- [`data/eval_reports/vitalguard_evaluation.md`](/C:/Users/Alson/Desktop/Projects/Gemini Nexus/data/eval_reports/vitalguard_evaluation.md)
+- [`data/eval_reports/vitalguard_evaluation.json`]
+- [`data/eval_reports/vitalguard_evaluation.md`]
 
 ## Documentation / Demo
 
